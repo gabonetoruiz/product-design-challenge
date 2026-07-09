@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Joe House · Job #1002 · RoofPilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F0651E; --orange-dark:#C94F13; --orange-light:#FDEAE0;
+  --blue:#2F6FED; --blue-light:#E8F0FE; --blue-dark:#1E4FBE;
+  --green:#1E9E5A; --green-light:#E3F8EC;
+  --amber:#B4740E; --amber-light:#FCF0DA;
+  --red:#D6423C; --red-light:#FCEAE9;
+  --purple:#7C5CDB; --purple-light:#EFEAFC;
+  --ink:#171A1F; --ink-2:#4B5160; --ink-3:#8A8F9C;
+  --line:#E7E8EC; --surface:#FFFFFF; --page:#F3F4F7;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --shadow:0 1px 2px rgba(23,26,31,.04), 0 6px 20px rgba(23,26,31,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  font-family:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#E3E5EA;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+.icon{width:18px;height:18px;flex-shrink:0}
+.icon-sm{width:15px;height:15px}
+.icon-lg{width:22px;height:22px}
+
+/* ---- device viewport ---- */
+.device-wrap{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:28px 16px}
+.app-frame{
+  width:390px;height:800px;max-height:calc(100vh - 56px);max-height:calc(100dvh - 56px);
+  background:var(--page);position:relative;overflow:hidden;
+  border-radius:44px;border:6px solid #14161A;box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+.screen{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+@media (max-width:480px){
+  .device-wrap{padding:0}
+  .app-frame{width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;border:none;box-shadow:none}
+}
+
+/* ---- top bar ---- */
+.topbar{
+  position:sticky;top:0;z-index:20;background:rgba(243,244,247,.92);backdrop-filter:blur(8px);
+  display:flex;align-items:center;gap:10px;padding:14px 16px 10px;
+}
+.iconbtn{
+  width:34px;height:34px;border-radius:50%;border:none;background:var(--surface);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-2);box-shadow:var(--shadow);flex-shrink:0;
+}
+.topbar-title{flex:1;min-width:0}
+.topbar-title h1{margin:0;font-size:17px;font-weight:700;line-height:1.2;color:var(--ink)}
+.topbar-title p{margin:1px 0 0;font-size:12.5px;color:var(--ink-3);font-weight:500}
+.topbar-title p span{color:var(--orange-dark);font-weight:700}
+
+/* ---- main ---- */
+main{padding:6px 16px 120px}
+section{margin-top:16px}
+.card{
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:16px 16px 16px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-head h2{margin:0;font-size:14.5px;font-weight:700;color:var(--ink)}
+.linklike{
+  background:none;border:none;color:var(--blue);font-weight:600;font-size:12.5px;
+  display:flex;align-items:center;gap:3px;padding:2px;
+}
+
+/* ---- stage stepper ---- */
+.stepper{display:flex;align-items:flex-start;width:100%}
+.step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:46px}
+.step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:2px solid var(--line);flex-shrink:0}
+.step-dot svg{width:10px;height:10px}
+.step.done .step-dot{background:var(--green);border-color:var(--green)}
+.step.done .step-dot svg{stroke:#fff}
+.step.current .step-dot{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-light)}
+.step.current .step-label{color:var(--orange-dark);font-weight:700}
+.step-label{font-size:8.3px;color:var(--ink-3);font-weight:600;text-align:center;line-height:1.25;min-height:22px;width:46px;white-space:normal}
+.step-line{flex:1 1 auto;height:2px;background:var(--line);margin-top:8px}
+.step-line.done{background:var(--green)}
+
+/* ---- next step card ---- */
+.next-card{
+  background:linear-gradient(180deg,#FFF7F2,#FFFFFF);border:1px solid var(--orange-light);
+  border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow);
+}
+.next-eyebrow{display:flex;align-items:center;gap:6px;color:var(--orange-dark);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.next-card h3{margin:0 0 4px;font-size:16.5px;font-weight:700;line-height:1.3}
+.next-card p{margin:0 0 14px;font-size:13px;color:var(--ink-2);line-height:1.5}
+.btn{
+  border:none;border-radius:var(--r-sm);font-weight:700;font-size:13.5px;padding:11px 16px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;
+}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:active{background:var(--orange-dark)}
+.btn-secondary{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-outline{background:#fff;color:var(--ink-2);border:1px solid var(--line)}
+.btn-ghost{background:var(--page);color:var(--ink-2)}
+.btn-sm{padding:8px 12px;font-size:12.5px;width:auto}
+.btn[disabled]{opacity:.45;pointer-events:none}
+
+/* ---- financial ---- */
+.fin-row{display:flex;align-items:center;justify-content:space-between}
+.fin-amount{font-size:24px;font-weight:800;color:var(--ink)}
+.fin-sub{font-size:12px;color:var(--ink-3);font-weight:500;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:11.5px;font-weight:700}
+.pill-blue{background:var(--blue-light);color:var(--blue-dark)}
+.pill-green{background:var(--green-light);color:#146B3C}
+.pill-amber{background:var(--amber-light);color:var(--amber)}
+.pill-gray{background:var(--page);color:var(--ink-2)}
+.fin-actions{display:flex;gap:8px;margin-top:14px}
+
+/* ---- contact rows ---- */
+.contact-row{display:flex;align-items:center;gap:10px;padding:9px 0}
+.contact-row+.contact-row{border-top:1px solid var(--line)}
+.avatar{
+  width:38px;height:38px;border-radius:50%;background:var(--blue-light);color:var(--blue-dark);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0
+}
+.avatar.purple{background:var(--purple-light);color:var(--purple)}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tag-tiny{font-size:9.5px;font-weight:700;color:var(--blue-dark);background:var(--blue-light);padding:2px 6px;border-radius:100px}
+.contact-sub{font-size:12px;color:var(--ink-3);margin-top:1px}
+.contact-actions{display:flex;gap:6px}
+.circle-action{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.add-row-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px;
+  padding:10px;border-radius:var(--r-sm);border:1.5px dashed var(--line);background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;
+}
+
+/* ---- job fields ---- */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.field{min-width:0}
+.field label{display:block;font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:3px}
+.field .val{font-size:13.5px;font-weight:600;color:var(--ink)}
+.field .val.muted{color:var(--ink-3);font-weight:500}
+.field input,.field select{
+  width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-size:13px;background:#fbfbfc
+}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.toggle-row span{font-size:12px;color:var(--ink-2);font-weight:600}
+.switch{width:36px;height:21px;border-radius:100px;background:var(--line);position:relative;flex-shrink:0;border:none}
+.switch.on{background:var(--orange)}
+.switch::after{content:'';position:absolute;width:17px;height:17px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .15s}
+.switch.on::after{left:17px}
+
+/* ---- tasks ---- */
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0}
+.task-row+.task-row{border-top:1px solid var(--line)}
+.check{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:#fff;color:#fff}
+.check svg{width:12px;height:12px;opacity:0}
+.task-row.done .check{background:var(--green);border-color:var(--green)}
+.task-row.done .check svg{opacity:1}
+.task-row.done .task-title{text-decoration:line-through;color:var(--ink-3)}
+.task-title{font-size:13.5px;font-weight:600}
+.task-meta{font-size:11.5px;color:var(--ink-3);margin-top:2px;display:flex;gap:8px;align-items:center}
+
+/* ---- activity ---- */
+.act-row{display:flex;gap:10px;padding:10px 0}
+.act-row+.act-row{border-top:1px solid var(--line)}
+.act-ico{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.act-ico svg{width:15px;height:15px}
+.act-body{flex:1;min-width:0}
+.act-title{font-size:13px;font-weight:700;line-height:1.35}
+.act-desc{font-size:12px;color:var(--ink-2);margin-top:2px;line-height:1.4}
+.act-time{font-size:11px;color:var(--ink-3);margin-top:3px;font-weight:500}
+.act-new{animation:flash .9s ease}
+@keyframes flash{0%{background:var(--orange-light)}100%{background:transparent}}
+
+/* ---- bottom bar ---- */
+.bottombar{
+  position:absolute;left:0;right:0;bottom:0;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  display:flex;padding:8px 6px calc(10px + env(safe-area-inset-bottom));z-index:30;
+}
+.qa-btn{
+  flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:6px 2px;border-radius:12px;color:var(--ink-2)
+}
+.qa-btn:active{background:var(--page)}
+.qa-btn svg{width:21px;height:21px}
+.qa-btn span{font-size:10.5px;font-weight:600}
+.fab{
+  position:absolute;right:16px;bottom:78px;
+  width:52px;height:52px;border-radius:50%;background:var(--orange);color:#fff;border:none;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(240,101,30,.45);z-index:31;
+}
+.fab svg{width:24px;height:24px}
+
+/* ---- overlay & sheets ---- */
+.overlay{
+  position:absolute;inset:0;background:rgba(15,17,20,.44);opacity:0;pointer-events:none;transition:opacity .18s;z-index:40;
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;transform:translateY(100%);
+  background:#fff;border-radius:22px 22px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));
+  z-index:41;transition:transform .22s cubic-bezier(.32,.72,0,1);max-height:86%;overflow-y:auto;
+}
+.sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--line);border-radius:100px;margin:2px auto 14px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sheet-head h3{margin:0;font-size:16.5px;font-weight:800}
+.sheet-sub{font-size:12.5px;color:var(--ink-3);margin:2px 0 16px;line-height:1.5}
+.form-field{margin-bottom:12px}
+.form-field label{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:5px}
+.form-field input,.form-field select,.form-field textarea{
+  width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 11px;font-size:13.5px;color:var(--ink);background:#fbfbfc
+}
+.form-field textarea{resize:vertical;min-height:76px}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--orange)}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 12px;border-radius:100px;border:1.5px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink-2);background:#fff}
+.chip.sel{background:var(--orange);border-color:var(--orange);color:#fff}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin:2px 0 14px}
+.checkbox-row input{width:16px;height:16px}
+.checkbox-row label{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.create-opt{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);
+  background:#fff;border-radius:14px;padding:13px 14px;margin-bottom:10px
+}
+.create-opt .oi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.create-opt .ot{flex:1}
+.create-opt .ot b{display:block;font-size:13.5px;font-weight:700}
+.create-opt .ot span{font-size:11.5px;color:var(--ink-3)}
+.create-opt[disabled]{opacity:.5}
+.create-opt .badge-rec{background:var(--green-light);color:#146B3C;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px}
+
+/* ---- toast ---- */
+.toast{
+  position:absolute;left:20px;right:20px;bottom:90px;transform:translateY(20px);
+  background:var(--ink);color:#fff;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;
+  opacity:0;pointer-events:none;transition:all .25s ease;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast .tico{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast .tico svg{width:12px;height:12px}
+.toast span{font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="device-wrap">
+<div class="app-frame" id="frame">
+<div class="screen">
+
+  <div class="topbar">
+    <button class="iconbtn" aria-label="Back"><i data-icon="chevronLeft"></i></button>
+    <div class="topbar-title">
+      <h1>Joe House</h1>
+      <p>Job <span>#1002</span> · Estimating</p>
+    </div>
+    <button class="iconbtn" id="menuBtn" aria-label="More options"><i data-icon="moreVertical"></i></button>
+  </div>
+
+  <main>
+
+    <section>
+      <div class="stepper" id="stepper">
+        <div class="step done" data-stage="Lead">
+          <div class="step-dot"><i data-icon="check" data-icon-sw="3"></i></div>
+          <div class="step-label">Lead</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step current" data-stage="Estimating">
+          <div class="step-dot"></div>
+          <div class="step-label">Estimating</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-stage="Sold">
+          <div class="step-dot"></div>
+          <div class="step-label">Sold</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-stage="In Production">
+          <div class="step-dot"></div>
+          <div class="step-label">In Production</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-stage="Accounts Receivable">
+          <div class="step-dot"></div>
+          <div class="step-label">Accounts Receivable</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-stage="Completed">
+          <div class="step-dot"></div>
+          <div class="step-label">Completed</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="next-card">
+        <div class="next-eyebrow"><i data-icon="flag" data-icon-class="icon-sm" data-icon-sw="2.4"></i> Next step</div>
+        <h3>Follow up on the estimate with Mary</h3>
+        <p>You sent the $18,450 estimate 2 days ago and haven't heard back. A quick nudge now keeps this job moving toward Sold.</p>
+        <button class="btn btn-primary" id="nextStepBtn">
+          <i data-icon="mail" data-icon-class="icon-sm" data-icon-sw="2.2"></i>
+          Send follow-up email
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
+          <h2>Financial summary</h2>
+          <button class="linklike">View all <i data-icon="chevronRight" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button>
+        </div>
+        <div class="fin-row">
+          <div>
+            <div class="fin-amount">$18,450</div>
+            <div class="fin-sub">Estimate · Sent Jul 6</div>
+          </div>
+          <span class="pill pill-blue">Awaiting response</span>
+        </div>
+        <div class="fin-actions">
+          <button class="btn btn-secondary btn-sm" style="flex:1" id="viewEstimateBtn">View estimate</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" id="createProposalBtn">Create proposal</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
+          <h2>Contacts</h2>
+        </div>
+        <div id="contactsList">
+          <div class="contact-row">
+            <div class="avatar">MD</div>
+            <div class="contact-info">
+              <div class="contact-name">Mary Doe <span class="tag-tiny">Primary</span></div>
+              <div class="contact-sub">Homeowner · (318) 555-0142</div>
+            </div>
+            <div class="contact-actions">
+              <button class="circle-action" data-quick="message" data-name="Mary Doe" aria-label="Text Mary"><i data-icon="message" data-icon-class="icon-sm" data-icon-sw="2.1"></i></button>
+              <button class="circle-action" data-quick="email" data-name="Mary Doe" aria-label="Email Mary"><i data-icon="mail" data-icon-class="icon-sm" data-icon-sw="2.1"></i></button>
+            </div>
+          </div>
+        </div>
+        <button class="add-row-btn" id="addContactBtn">
+          <i data-icon="plus" data-icon-class="icon-sm" data-icon-sw="2.3"></i>
+          Add related contact
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
+          <h2>Job details</h2>
+          <button class="linklike" id="editFieldsBtn">
+            <i data-icon="pencil" data-icon-class="icon-sm" data-icon-sw="2.2"></i>
+            Edit
+          </button>
+        </div>
+        <div class="field-grid" id="fieldsView">
+          <div class="field"><label>Roof type</label><div class="val">Architectural shingles</div></div>
+          <div class="field"><label>Roof age</label><div class="val">18 years</div></div>
+          <div class="field"><label>Insurance company</label><div class="val">State Farm</div></div>
+          <div class="field"><label>Claim #</label><div class="val">SF-88213-24</div></div>
+          <div class="field"><label>Damage type</label><div class="val">Hail</div></div>
+          <div class="field"><label>Date of loss</label><div class="val">04/12/2026</div></div>
+          <div class="field"><label>Policy #</label><div class="val">HO-5523910</div></div>
+          <div class="field"><label>Gated community</label><div class="val">No</div></div>
+        </div>
+        <div class="field-grid" id="fieldsEdit" style="display:none">
+          <div class="field"><label>Roof type</label><input value="Architectural shingles"></div>
+          <div class="field"><label>Roof age</label><input value="18 years"></div>
+          <div class="field"><label>Insurance company</label><input value="State Farm"></div>
+          <div class="field"><label>Claim #</label><input value="SF-88213-24"></div>
+          <div class="field"><label>Damage type</label><input value="Hail"></div>
+          <div class="field"><label>Date of loss</label><input value="04/12/2026"></div>
+          <div class="field"><label>Policy #</label><input value="HO-5523910"></div>
+          <div class="field"><label>Gated community</label><input value="No"></div>
+        </div>
+        <button class="btn btn-primary" id="saveFieldsBtn" style="display:none;margin-top:14px">Save changes</button>
+        <div class="toggle-row">
+          <span>Show all fields (incl. empty)</span>
+          <button class="switch" id="showAllToggle"></button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
+          <h2>Tasks</h2>
+          <button class="linklike" id="addTaskLink">
+            <i data-icon="plus" data-icon-class="icon-sm" data-icon-sw="2.3"></i>
+            Add
+          </button>
+        </div>
+        <div id="tasksList">
+          <div class="task-row" data-task="1">
+            <button class="check"><i data-icon="check" data-icon-sw="3"></i></button>
+            <div>
+              <div class="task-title">Follow up on estimate with Mary</div>
+              <div class="task-meta"><span>Due today</span>·<span>Sam Wells</span></div>
+            </div>
+          </div>
+          <div class="task-row" data-task="2">
+            <button class="check"><i data-icon="check" data-icon-sw="3"></i></button>
+            <div>
+              <div class="task-title">Schedule adjuster walk</div>
+              <div class="task-meta"><span>Due Mon, Jul 13</span>·<span>Sam Wells</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
+          <h2>Activity</h2>
+        </div>
+        <div id="activityList">
+          <div class="act-row">
+            <div class="act-ico" style="background:var(--blue-light);color:#1E4FBE"><i data-icon="mail" data-icon-sw="2.1"></i></div>
+            <div class="act-body">
+              <div class="act-title">Email sent — Estimate follow-up</div>
+              <div class="act-desc">To Mary Doe</div>
+              <div class="act-time">Today, 9:12 AM</div>
+            </div>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:var(--page);color:#4B5160"><i data-icon="fileText" data-icon-sw="2.1"></i></div>
+            <div class="act-body">
+              <div class="act-title">Note added</div>
+              <div class="act-desc">Mary confirmed architectural shingles, color Weathered Wood. Waiting on adjuster approval for full replacement vs. repair.</div>
+              <div class="act-time">Yesterday, 4:30 PM</div>
+            </div>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:var(--green-light);color:#146B3C"><i data-icon="check" data-icon-sw="2.6"></i></div>
+            <div class="act-body">
+              <div class="act-title">Task completed</div>
+              <div class="act-desc">Send estimate to Mary Doe</div>
+              <div class="act-time">Jul 7, 11:05 AM</div>
+            </div>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:var(--orange-light);color:#C94F13"><i data-icon="flag" data-icon-sw="2.1"></i></div>
+            <div class="act-body">
+              <div class="act-title">Stage changed</div>
+              <div class="act-desc">Lead → Estimating</div>
+              <div class="act-time">Jul 3, 2:18 PM</div>
+            </div>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:var(--purple-light);color:#7C5CDB"><i data-icon="user" data-icon-sw="2.1"></i></div>
+            <div class="act-body">
+              <div class="act-title">Job created</div>
+              <div class="act-desc">From lead source: Referral — Robert Klein</div>
+              <div class="act-time">Jul 1, 8:44 AM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+  <button class="fab" id="fabCreate" aria-label="Create"><i data-icon="plus" data-icon-sw="2.4"></i></button>
+
+  <div class="bottombar">
+    <button class="qa-btn" data-quick="note"><i data-icon="fileText" data-icon-sw="1.9"></i><span>Note</span></button>
+    <button class="qa-btn" data-quick="task"><i data-icon="checkSquare" data-icon-sw="1.9"></i><span>Task</span></button>
+    <button class="qa-btn" data-quick="email"><i data-icon="mail" data-icon-sw="1.9"></i><span>Email</span></button>
+    <button class="qa-btn" data-quick="message"><i data-icon="message" data-icon-sw="1.9"></i><span>Message</span></button>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Add contact sheet -->
+  <div class="sheet" id="sheetContact">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>Add a contact</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <p class="sheet-sub">Add a spouse, co-owner, or anyone else involved in this job. They'll show up alongside Mary on the job.</p>
+    <div class="form-field"><label>Full name</label><input id="cName" placeholder="e.g. John Doe"></div>
+    <div class="form-field">
+      <label>Relationship</label>
+      <div class="chip-row" id="relChips">
+        <button class="chip sel" data-rel="Spouse">Spouse</button>
+        <button class="chip" data-rel="Co-owner">Co-owner</button>
+        <button class="chip" data-rel="Tenant">Tenant</button>
+        <button class="chip" data-rel="Other">Other</button>
+      </div>
+    </div>
+    <div class="form-field"><label>Phone</label><input id="cPhone" placeholder="(318) 555-0198"></div>
+    <div class="form-field"><label>Email</label><input id="cEmail" placeholder="name@email.com"></div>
+    <div class="checkbox-row"><input type="checkbox" id="cPrimary"><label for="cPrimary">Set as primary contact</label></div>
+    <button class="btn btn-primary" id="cSubmit" disabled>Add contact</button>
+  </div>
+
+  <!-- Note sheet -->
+  <div class="sheet" id="sheetNote">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>New note</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <p class="sheet-sub">Visible to your whole team on this job's timeline.</p>
+    <div class="form-field"><label>Note</label><textarea id="noteBody" placeholder="Type what happened..."></textarea></div>
+    <button class="btn btn-primary" id="noteSubmit">Save note</button>
+  </div>
+
+  <!-- Task sheet -->
+  <div class="sheet" id="sheetTask">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>New task</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <div class="form-field"><label>Title</label><input id="taskTitle" placeholder="e.g. Call roofing supplier"></div>
+    <div class="form-field"><label>Due date</label><input id="taskDue" type="date"></div>
+    <div class="form-field"><label>Assigned to</label><input id="taskAssignee" value="Sam Wells"></div>
+    <button class="btn btn-primary" id="taskSubmit">Create task</button>
+  </div>
+
+  <!-- Email sheet -->
+  <div class="sheet" id="sheetEmail">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>Send email</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <div class="form-field"><label>To</label><select id="emailTo"><option>Mary Doe — doe.mary@marydoe.com</option></select></div>
+    <div class="form-field"><label>Subject</label><input id="emailSubject" value="Following up on your roof estimate"></div>
+    <div class="form-field"><label>Message</label><textarea id="emailBody">Hi Mary, just checking in on the $18,450 estimate we sent over. Happy to answer any questions or walk through the details on a quick call. Let me know what works!</textarea></div>
+    <button class="btn btn-primary" id="emailSubmit">Send email</button>
+  </div>
+
+  <!-- Message sheet -->
+  <div class="sheet" id="sheetMessage">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>Send text message</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <div class="form-field"><label>To</label><select id="msgTo"><option>Mary Doe — (318) 555-0142</option></select></div>
+    <div class="form-field"><label>Message</label><textarea id="msgBody">Hi Mary, it's Sam with RoofPilot Roofing — wanted to follow up on the estimate we sent. Free for a quick call today?</textarea></div>
+    <button class="btn btn-primary" id="msgSubmit">Send text</button>
+  </div>
+
+  <!-- Create sheet -->
+  <div class="sheet" id="sheetCreate">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>Create</h3><button class="iconbtn" data-close><i data-icon="close" data-icon-class="icon-sm" data-icon-sw="2.3"></i></button></div>
+    <p class="sheet-sub">What do you want to build for this job?</p>
+    <button class="create-opt" id="createProposalOpt">
+      <div class="oi" style="background:var(--orange-light);color:#C94F13"><i data-icon="fileTextLines" data-icon-sw="2.1"></i></div>
+      <div class="ot"><b>Proposal <span class="badge-rec">Recommended</span></b><span>Turn the estimate into a signable proposal</span></div>
+    </button>
+    <button class="create-opt" id="createEstimateOpt">
+      <div class="oi" style="background:var(--blue-light);color:#1E4FBE"><i data-icon="dollar" data-icon-sw="2.1"></i></div>
+      <div class="ot"><b>New estimate</b><span>Create another pricing option for Mary</span></div>
+    </button>
+    <button class="create-opt" disabled>
+      <div class="oi" style="background:var(--page);color:#8A8F9C"><i data-icon="clipboardCheck" data-icon-sw="2.1"></i></div>
+      <div class="ot"><b>Work order</b><span>Unlocks once the job is Sold</span></div>
+    </button>
+    <button class="create-opt" disabled style="margin-bottom:0">
+      <div class="oi" style="background:var(--page);color:#8A8F9C"><i data-icon="receipt" data-icon-sw="2.1"></i></div>
+      <div class="ot"><b>Invoice</b><span>Unlocks once the proposal is signed</span></div>
+    </button>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="tico"><i data-icon="check" data-icon-sw="3"></i></div>
+    <span id="toastMsg">Saved</span>
+  </div>
+
+</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+/* ---- unified icon registry (Lucide/Feather-style paths, MIT-licensed shapes, embedded inline — no external icon font) ---- */
+const ICONS={
+  chevronLeft:'<path d="M15 18l-6-6 6-6"/>',
+  chevronRight:'<path d="M9 18l6-6-6-6"/>',
+  moreVertical:'<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  mail:'<path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/>',
+  message:'<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  checkSquare:'<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  pencil:'<path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  phone:'<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>',
+  user:'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  fileText:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',
+  fileTextLines:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/>',
+  dollar:'<path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',
+  clipboardCheck:'<path d="M9 2h6a1 1 0 011 1v2H8V3a1 1 0 011-1z"/><path d="M9 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-3"/><path d="M9 13.5l2 2 4-4.5"/>',
+  receipt:'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><path d="M8 7h8M8 11h8M8 15h5"/>'
+};
+
+function iconSvg(name, cls, sw){
+  return '<svg'+(cls?(' class="'+cls+'"'):'')+' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(sw||2)+'" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||'')+'</svg>';
+}
+function hydrateIcons(){
+  $$('[data-icon]').forEach(el=>{
+    const name=el.getAttribute('data-icon');
+    const cls=el.getAttribute('data-icon-class')||'icon';
+    const sw=el.getAttribute('data-icon-sw')||2;
+    const wrap=document.createElement('span');
+    wrap.innerHTML=iconSvg(name,cls,sw);
+    el.replaceWith(wrap.firstElementChild);
+  });
+}
+hydrateIcons();
+
+const TONES={
+  blue:{bg:'var(--blue-light)',fg:'#1E4FBE'},
+  green:{bg:'var(--green-light)',fg:'#146B3C'},
+  gray:{bg:'var(--page)',fg:'#4B5160'},
+  orange:{bg:'var(--orange-light)',fg:'#C94F13'},
+  purple:{bg:'var(--purple-light)',fg:'#7C5CDB'}
+};
+function escapeHtml(s){
+  const d=document.createElement('div'); d.textContent=s; return d.innerHTML;
+}
+function addActivity(tone, iconName, title, desc){
+  const t=TONES[tone];
+  const list=$('#activityList');
+  const row=document.createElement('div');
+  row.className='act-row act-new';
+  row.innerHTML='<div class="act-ico" style="background:'+t.bg+';color:'+t.fg+'">'+iconSvg(iconName,'',2.1)+'</div>'+
+    '<div class="act-body"><div class="act-title">'+escapeHtml(title)+'</div><div class="act-desc">'+escapeHtml(desc)+'</div><div class="act-time">Just now</div></div>';
+  list.prepend(row);
+}
+
+const overlay=$('#overlay'), toast=$('#toast'), toastMsg=$('#toastMsg');
+let toastTimer;
+
+function openSheet(id){
+  overlay.classList.add('open');
+  $(id).classList.add('open');
+}
+function closeSheets(){
+  overlay.classList.remove('open');
+  $$('.sheet').forEach(s=>s.classList.remove('open'));
+}
+overlay.addEventListener('click', closeSheets);
+$$('[data-close]').forEach(b=>b.addEventListener('click', closeSheets));
+
+function showToast(msg){
+  toastMsg.textContent=msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'), 2600);
+}
+
+/* ---- quick action buttons (bottom bar + contact row shortcuts) ---- */
+$$('[data-quick]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const type=btn.dataset.quick;
+    if(type==='note') openSheet('#sheetNote');
+    if(type==='task') openSheet('#sheetTask');
+    if(type==='email') openSheet('#sheetEmail');
+    if(type==='message') openSheet('#sheetMessage');
+  });
+});
+$('#nextStepBtn').addEventListener('click', ()=>openSheet('#sheetEmail'));
+$('#fabCreate').addEventListener('click', ()=>openSheet('#sheetCreate'));
+$('#createProposalBtn').addEventListener('click', ()=>openSheet('#sheetCreate'));
+$('#viewEstimateBtn').addEventListener('click', ()=>showToast('Opening estimate #E-1002-1…'));
+
+/* ---- stage stepper ---- */
+$$('.step').forEach(s=>{
+  s.addEventListener('click', ()=>{
+    if(s.classList.contains('current')) { showToast('You are here: '+s.dataset.stage); return; }
+    if(s.classList.contains('done')) { showToast(s.dataset.stage+' — already completed'); return; }
+    showToast('Complete the current stage before moving to '+s.dataset.stage);
+  });
+});
+
+/* ---- note ---- */
+$('#noteSubmit').addEventListener('click', ()=>{
+  const val=$('#noteBody').value.trim();
+  if(!val){ $('#noteBody').focus(); return; }
+  closeSheets();
+  showToast('Note saved');
+  addActivity('gray','fileText','Note added', val);
+  $('#noteBody').value='';
+});
+
+/* ---- task ---- */
+$('#taskSubmit').addEventListener('click', ()=>{
+  const title=$('#taskTitle').value.trim();
+  if(!title){ $('#taskTitle').focus(); return; }
+  const due=$('#taskDue').value || 'No due date';
+  const who=$('#taskAssignee').value || 'Unassigned';
+  closeSheets();
+  showToast('Task created');
+  const list=$('#tasksList');
+  const row=document.createElement('div');
+  row.className='task-row act-new';
+  row.innerHTML='<button class="check">'+iconSvg('check','',3)+'</button>'+
+    '<div><div class="task-title">'+escapeHtml(title)+'</div><div class="task-meta"><span>Due '+escapeHtml(due)+'</span>·<span>'+escapeHtml(who)+'</span></div></div>';
+  list.appendChild(row);
+  attachCheck(row.querySelector('.check'));
+  addActivity('green','checkSquare','Task created', title);
+  $('#taskTitle').value='';
+});
+
+/* ---- email ---- */
+$('#emailSubmit').addEventListener('click', ()=>{
+  closeSheets();
+  showToast('Email sent to Mary Doe');
+  addActivity('blue','mail','Email sent — '+$('#emailSubject').value, 'To Mary Doe');
+});
+
+/* ---- message ---- */
+$('#msgSubmit').addEventListener('click', ()=>{
+  closeSheets();
+  showToast('Text sent to Mary Doe');
+  addActivity('purple','message','Text message sent', 'To Mary Doe');
+});
+
+/* ---- relationship chips ---- */
+let selectedRel='Spouse';
+$$('#relChips .chip').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    $$('#relChips .chip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    selectedRel=c.dataset.rel;
+  });
+});
+
+/* ---- add contact flow (demoed flow) ---- */
+$('#addContactBtn').addEventListener('click', ()=>openSheet('#sheetContact'));
+$('#cName').addEventListener('input', ()=>{
+  $('#cSubmit').disabled = $('#cName').value.trim().length===0;
+});
+$('#cSubmit').addEventListener('click', ()=>{
+  const name=$('#cName').value.trim();
+  if(!name) return;
+  const phone=$('#cPhone').value.trim()||'No phone';
+  const isPrimary=$('#cPrimary').checked;
+  const initials=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  closeSheets();
+  showToast(name+' added as a contact');
+
+  const list=$('#contactsList');
+  const row=document.createElement('div');
+  row.className='contact-row act-new';
+  row.innerHTML='<div class="avatar purple">'+escapeHtml(initials)+'</div>'+
+    '<div class="contact-info">'+
+      '<div class="contact-name">'+escapeHtml(name)+' '+(isPrimary?'<span class="tag-tiny">Primary</span>':'')+'</div>'+
+      '<div class="contact-sub">'+escapeHtml(selectedRel)+' · '+escapeHtml(phone)+'</div>'+
+    '</div>'+
+    '<div class="contact-actions">'+
+      '<button class="circle-action" aria-label="Text">'+iconSvg('message','icon-sm',2.1)+'</button>'+
+      '<button class="circle-action" aria-label="Email">'+iconSvg('mail','icon-sm',2.1)+'</button>'+
+    '</div>';
+  list.appendChild(row);
+
+  addActivity('purple','user','Contact added', name+' ('+selectedRel+')');
+
+  $('#cName').value='';$('#cPhone').value='';$('#cEmail').value='';$('#cPrimary').checked=false;
+  $('#cSubmit').disabled=true;
+});
+
+/* ---- job fields edit ---- */
+$('#editFieldsBtn').addEventListener('click', ()=>{
+  $('#fieldsView').style.display='none';
+  $('#fieldsEdit').style.display='grid';
+  $('#saveFieldsBtn').style.display='block';
+});
+$('#saveFieldsBtn').addEventListener('click', ()=>{
+  const inputs=$$('#fieldsEdit input');
+  const labels=$$('#fieldsView .val');
+  inputs.forEach((inp,i)=>{ labels[i].textContent=inp.value; });
+  $('#fieldsEdit').style.display='none';
+  $('#fieldsView').style.display='grid';
+  $('#saveFieldsBtn').style.display='none';
+  showToast('Job details updated');
+  addActivity('gray','pencil','Job details updated', '8 fields edited');
+});
+
+/* ---- show all fields toggle ---- */
+$('#showAllToggle').addEventListener('click', function(){
+  this.classList.toggle('on');
+});
+
+/* ---- task checkboxes ---- */
+function attachCheck(el){
+  el.addEventListener('click', ()=>{
+    const row=el.closest('.task-row');
+    row.classList.toggle('done');
+    if(row.classList.contains('done')){
+      showToast('Task completed');
+      addActivity('green','check', 'Task completed', row.querySelector('.task-title').textContent);
+    }
+  });
+}
+$$('.check').forEach(attachCheck);
+
+/* ---- create sheet options ---- */
+$('#createProposalOpt').addEventListener('click', ()=>{
+  closeSheets();
+  showToast('Proposal draft created from estimate');
+  addActivity('orange','fileTextLines','Proposal created', 'Draft from $18,450 estimate');
+});
+$('#createEstimateOpt').addEventListener('click', ()=>{
+  closeSheets();
+  showToast('New estimate started');
+  addActivity('blue','dollar','Estimate created', 'New draft estimate');
+});
+
+/* ---- menu button ---- */
+$('#menuBtn').addEventListener('click', ()=> showToast('Job options'));
+</script>
+</body>
+</html>
