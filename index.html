@@ -102,15 +102,16 @@
           <h2>Contacts</h2>
         </div>
         <div id="contactsList">
-          <div class="contact-row">
-            <div class="avatar">MD</div>
+          <div class="contact-row" data-primary="true">
+            <div class="avatar">MT</div>
             <div class="contact-info">
-              <div class="contact-name">Mary Doe <span class="tag-tiny">Primary</span></div>
+              <div class="contact-name">Mary Taylor <span class="tag-tiny">Primary</span></div>
               <div class="contact-sub">Homeowner · (318) 555-0142</div>
             </div>
             <div class="contact-actions">
-              <button class="circle-action" data-quick="message" data-name="Mary Doe" aria-label="Text Mary"><i class="hgi-stroke hgi-message-01 icon-sm"></i></button>
-              <button class="circle-action" data-quick="email" data-name="Mary Doe" aria-label="Email Mary"><i class="hgi-stroke hgi-mail-01 icon-sm"></i></button>
+              <button class="circle-action" data-quick="message" data-name="Mary Taylor" aria-label="Text Mary"><i class="hgi-stroke hgi-message-01 icon-sm"></i></button>
+              <button class="circle-action" data-quick="email" data-name="Mary Taylor" aria-label="Email Mary"><i class="hgi-stroke hgi-mail-01 icon-sm"></i></button>
+              <button class="circle-action danger" data-delete-contact aria-label="Remove contact"><i class="hgi-stroke hgi-delete-02 icon-sm"></i></button>
             </div>
           </div>
         </div>
@@ -161,6 +162,32 @@
     <section>
       <div class="card">
         <div class="card-head">
+          <h2>Notes</h2>
+        </div>
+        <div id="notesList">
+          <div class="note-row" data-note-id="seed-1">
+            <div class="note-body">
+              <div class="note-text">Mary confirmed architectural shingles, color Weathered Wood. Waiting on adjuster approval for full replacement vs. repair.</div>
+              <textarea class="note-edit-input" style="display:none">Mary confirmed architectural shingles, color Weathered Wood. Waiting on adjuster approval for full replacement vs. repair.</textarea>
+              <div class="note-time">Yesterday, 4:30 PM</div>
+              <div class="note-edit-actions" style="display:none">
+                <button class="btn btn-outline btn-sm" type="button" data-cancel-note>Cancel</button>
+                <button class="btn btn-primary btn-sm" type="button" data-save-note>Save</button>
+              </div>
+            </div>
+            <div class="note-actions">
+              <button class="circle-action" data-edit-note aria-label="Edit note"><i class="hgi-stroke hgi-pencil-edit-01 icon-sm"></i></button>
+              <button class="circle-action danger" data-delete-note aria-label="Delete note"><i class="hgi-stroke hgi-delete-02 icon-sm"></i></button>
+            </div>
+          </div>
+        </div>
+        <p class="empty-hint" id="notesEmptyHint" style="display:none">No notes yet — add one from the bottom bar.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <div class="card-head">
           <h2>Tasks</h2>
           <button class="linklike" id="addTaskLink">
             <i class="hgi-stroke hgi-plus-sign icon-sm"></i>
@@ -196,7 +223,7 @@
             <div class="act-ico" style="background:var(--blue-light);color:#1E4FBE"><i class="hgi-stroke hgi-mail-01"></i></div>
             <div class="act-body">
               <div class="act-title">Email sent — Estimate follow-up</div>
-              <div class="act-desc">To Mary Doe</div>
+              <div class="act-desc">To Mary Taylor</div>
               <div class="act-time">Today, 9:12 AM</div>
             </div>
           </div>
@@ -212,7 +239,7 @@
             <div class="act-ico" style="background:var(--green-light);color:#146B3C"><i class="hgi-stroke hgi-tick-01"></i></div>
             <div class="act-body">
               <div class="act-title">Task completed</div>
-              <div class="act-desc">Send estimate to Mary Doe</div>
+              <div class="act-desc">Send estimate to Mary Taylor</div>
               <div class="act-time">Jul 7, 11:05 AM</div>
             </div>
           </div>
@@ -294,7 +321,7 @@
   <div class="sheet" id="sheetEmail">
     <div class="sheet-handle"></div>
     <div class="sheet-head"><h3>Send email</h3><button class="iconbtn" data-close><i class="hgi-stroke hgi-cancel-01 icon-sm"></i></button></div>
-    <div class="form-field"><label>To</label><select id="emailTo"><option>Mary Doe — doe.mary@marydoe.com</option></select></div>
+    <div class="form-field"><label>To</label><select id="emailTo"><option>Mary Taylor — taylor.mary@marytaylor.com</option></select></div>
     <div class="form-field"><label>Subject</label><input id="emailSubject" value="Following up on your roof estimate"></div>
     <div class="form-field"><label>Message</label><textarea id="emailBody">Hi Mary, just checking in on the $18,450 estimate we sent over. Happy to answer any questions or walk through the details on a quick call. Let me know what works!</textarea></div>
     <button class="btn btn-primary" id="emailSubmit">Send email</button>
@@ -304,7 +331,7 @@
   <div class="sheet" id="sheetMessage">
     <div class="sheet-handle"></div>
     <div class="sheet-head"><h3>Send text message</h3><button class="iconbtn" data-close><i class="hgi-stroke hgi-cancel-01 icon-sm"></i></button></div>
-    <div class="form-field"><label>To</label><select id="msgTo"><option>Mary Doe — (318) 555-0142</option></select></div>
+    <div class="form-field"><label>To</label><select id="msgTo"><option>Mary Taylor — (318) 555-0142</option></select></div>
     <div class="form-field"><label>Message</label><textarea id="msgBody">Hi Mary, it's Sam with RoofPilot Roofing — wanted to follow up on the estimate we sent. Free for a quick call today?</textarea></div>
     <button class="btn btn-primary" id="msgSubmit">Send text</button>
   </div>
@@ -387,7 +414,7 @@ function showToast(msg){
 }
 
 /* ---- quick action buttons (bottom bar + contact row shortcuts) ---- */
-$$('[data-quick]').forEach(btn=>{
+function bindQuickAction(btn){
   btn.addEventListener('click', ()=>{
     const type=btn.dataset.quick;
     if(type==='note') openSheet('#sheetNote');
@@ -395,7 +422,8 @@ $$('[data-quick]').forEach(btn=>{
     if(type==='email') openSheet('#sheetEmail');
     if(type==='message') openSheet('#sheetMessage');
   });
-});
+}
+$$('[data-quick]').forEach(bindQuickAction);
 $('#nextStepBtn').addEventListener('click', ()=>openSheet('#sheetEmail'));
 $('#fabCreate').addEventListener('click', ()=>openSheet('#sheetCreate'));
 $('#createProposalBtn').addEventListener('click', ()=>openSheet('#sheetCreate'));
@@ -410,17 +438,87 @@ $$('.step').forEach(s=>{
   });
 });
 
-/* ---- note ---- */
+/* ---- notes list (create / edit / delete, plus Activity log entry) ---- */
+function noteRowHTML(id, text, time){
+  return '<div class="note-row" data-note-id="'+id+'">'+
+      '<div class="note-body">'+
+        '<div class="note-text">'+escapeHtml(text)+'</div>'+
+        '<textarea class="note-edit-input" style="display:none">'+escapeHtml(text)+'</textarea>'+
+        '<div class="note-time">'+escapeHtml(time)+'</div>'+
+        '<div class="note-edit-actions" style="display:none">'+
+          '<button class="btn btn-outline btn-sm" type="button" data-cancel-note>Cancel</button>'+
+          '<button class="btn btn-primary btn-sm" type="button" data-save-note>Save</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="note-actions">'+
+        '<button class="circle-action" data-edit-note aria-label="Edit note">'+hgi('pencil-edit-01')+'</button>'+
+        '<button class="circle-action danger" data-delete-note aria-label="Delete note">'+hgi('delete-02')+'</button>'+
+      '</div>'+
+    '</div>';
+}
+function updateNotesEmptyState(){
+  $('#notesEmptyHint').style.display = $('#notesList').children.length ? 'none' : 'block';
+}
+function attachNoteRow(row){
+  const textEl=row.querySelector('.note-text');
+  const editInput=row.querySelector('.note-edit-input');
+  const editActions=row.querySelector('.note-edit-actions');
+  const timeEl=row.querySelector('.note-time');
+
+  row.querySelector('[data-edit-note]').addEventListener('click', ()=>{
+    editInput.value=textEl.textContent;
+    textEl.style.display='none';
+    editInput.style.display='block';
+    editActions.style.display='flex';
+    editInput.focus();
+  });
+  row.querySelector('[data-cancel-note]').addEventListener('click', ()=>{
+    textEl.style.display='block';
+    editInput.style.display='none';
+    editActions.style.display='none';
+  });
+  row.querySelector('[data-save-note]').addEventListener('click', ()=>{
+    const val=editInput.value.trim();
+    if(!val) return;
+    textEl.textContent=val;
+    textEl.style.display='block';
+    editInput.style.display='none';
+    editActions.style.display='none';
+    timeEl.textContent='Just now (edited)';
+    showToast('Note updated');
+    addActivity('gray','pencil-edit-01','Note updated', val);
+  });
+  row.querySelector('[data-delete-note]').addEventListener('click', ()=>{
+    const text=textEl.textContent;
+    row.remove();
+    showToast('Note deleted');
+    addActivity('gray','delete-02','Note deleted', text);
+    updateNotesEmptyState();
+  });
+}
+$$('#notesList .note-row').forEach(attachNoteRow);
+updateNotesEmptyState();
+
 $('#noteSubmit').addEventListener('click', ()=>{
   const val=$('#noteBody').value.trim();
   if(!val){ $('#noteBody').focus(); return; }
   closeSheets();
   showToast('Note saved');
   addActivity('gray','note-01','Note added', val);
+
+  const wrap=document.createElement('div');
+  wrap.innerHTML=noteRowHTML('n'+Date.now(), val, 'Just now');
+  const row=wrap.firstElementChild;
+  row.classList.add('act-new');
+  $('#notesList').prepend(row);
+  attachNoteRow(row);
+  updateNotesEmptyState();
+
   $('#noteBody').value='';
 });
 
 /* ---- task ---- */
+$('#addTaskLink').addEventListener('click', ()=>openSheet('#sheetTask'));
 $('#taskSubmit').addEventListener('click', ()=>{
   const title=$('#taskTitle').value.trim();
   if(!title){ $('#taskTitle').focus(); return; }
@@ -442,15 +540,15 @@ $('#taskSubmit').addEventListener('click', ()=>{
 /* ---- email ---- */
 $('#emailSubmit').addEventListener('click', ()=>{
   closeSheets();
-  showToast('Email sent to Mary Doe');
-  addActivity('blue','mail-01','Email sent — '+$('#emailSubject').value, 'To Mary Doe');
+  showToast('Email sent to Mary Taylor');
+  addActivity('blue','mail-01','Email sent — '+$('#emailSubject').value, 'To Mary Taylor');
 });
 
 /* ---- message ---- */
 $('#msgSubmit').addEventListener('click', ()=>{
   closeSheets();
-  showToast('Text sent to Mary Doe');
-  addActivity('purple','message-01','Text message sent', 'To Mary Doe');
+  showToast('Text sent to Mary Taylor');
+  addActivity('purple','message-01','Text message sent', 'To Mary Taylor');
 });
 
 /* ---- relationship chips ---- */
@@ -463,7 +561,44 @@ $$('#relChips .chip').forEach(c=>{
   });
 });
 
-/* ---- add contact flow (demoed flow) ---- */
+/* ---- contacts: add / set primary / delete (min. 1 contact required) ---- */
+function setPrimaryContact(rowEl){
+  $$('#contactsList .contact-row').forEach(r=>{
+    r.dataset.primary='false';
+    const tag=r.querySelector('.tag-tiny');
+    if(tag) tag.remove();
+  });
+  rowEl.dataset.primary='true';
+  rowEl.querySelector('.contact-name').insertAdjacentHTML('beforeend', ' <span class="tag-tiny">Primary</span>');
+}
+function updateContactDeleteButtons(){
+  const rows=$$('#contactsList .contact-row');
+  const onlyOne = rows.length<=1;
+  rows.forEach(r=>{
+    const del=r.querySelector('[data-delete-contact]');
+    if(del) del.disabled=onlyOne;
+  });
+}
+function attachContactDelete(row){
+  const btn=row.querySelector('[data-delete-contact]');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    if($$('#contactsList .contact-row').length<=1) return;
+    const name=row.querySelector('.contact-name').textContent.replace('Primary','').trim();
+    const wasPrimary=row.dataset.primary==='true';
+    row.remove();
+    showToast(name+' removed from contacts');
+    addActivity('gray','delete-02','Contact removed', name);
+    const remaining=$$('#contactsList .contact-row');
+    if(wasPrimary && remaining.length) setPrimaryContact(remaining[0]);
+    updateContactDeleteButtons();
+  });
+}
+$$('#contactsList .contact-row').forEach(row=>{
+  attachContactDelete(row);
+});
+updateContactDeleteButtons();
+
 $('#addContactBtn').addEventListener('click', ()=>openSheet('#sheetContact'));
 $('#cName').addEventListener('input', ()=>{
   $('#cSubmit').disabled = $('#cName').value.trim().length===0;
@@ -481,18 +616,25 @@ $('#cSubmit').addEventListener('click', ()=>{
   const list=$('#contactsList');
   const row=document.createElement('div');
   row.className='contact-row act-new';
+  row.dataset.primary='false';
   row.innerHTML='<div class="avatar purple">'+escapeHtml(initials)+'</div>'+
     '<div class="contact-info">'+
-      '<div class="contact-name">'+escapeHtml(name)+' '+(isPrimary?'<span class="tag-tiny">Primary</span>':'')+'</div>'+
+      '<div class="contact-name">'+escapeHtml(name)+'</div>'+
       '<div class="contact-sub">'+escapeHtml(selectedRel)+' · '+escapeHtml(phone)+'</div>'+
     '</div>'+
     '<div class="contact-actions">'+
-      '<button class="circle-action" aria-label="Text">'+hgi('message-01')+'</button>'+
-      '<button class="circle-action" aria-label="Email">'+hgi('mail-01')+'</button>'+
+      '<button class="circle-action" data-quick="message" data-name="'+escapeHtml(name)+'" aria-label="Text">'+hgi('message-01')+'</button>'+
+      '<button class="circle-action" data-quick="email" data-name="'+escapeHtml(name)+'" aria-label="Email">'+hgi('mail-01')+'</button>'+
+      '<button class="circle-action danger" data-delete-contact aria-label="Remove contact">'+hgi('delete-02')+'</button>'+
     '</div>';
   list.appendChild(row);
 
-  addActivity('purple','user-02','Contact added', name+' ('+selectedRel+')');
+  row.querySelectorAll('[data-quick]').forEach(bindQuickAction);
+  attachContactDelete(row);
+  if(isPrimary) setPrimaryContact(row);
+  updateContactDeleteButtons();
+
+  addActivity('purple','user-02','Contact added', name+' ('+selectedRel+')'+(isPrimary?' · set as primary':''));
 
   $('#cName').value='';$('#cPhone').value='';$('#cEmail').value='';$('#cPrimary').checked=false;
   $('#cSubmit').disabled=true;
