@@ -25,39 +25,19 @@
       <button class="iconbtn" aria-label="Back"><i class="hgi-stroke hgi-arrow-left-01 icon"></i></button>
       <div class="topbar-title">
         <h1>Joe House</h1>
-        <p>Job <span>#1002</span> · Estimating</p>
+        <p>Job <span>#1002</span></p>
       </div>
       <button class="iconbtn" id="menuBtn" aria-label="More options"><i class="hgi-stroke hgi-more-vertical icon"></i></button>
     </div>
-    <div class="stepper" id="stepper">
-      <div class="step done" data-stage="Lead">
-        <div class="step-dot"><i class="hgi-stroke hgi-tick-01"></i></div>
-        <div class="step-label">Lead</div>
-      </div>
-      <div class="step-line done"></div>
-      <div class="step current" data-stage="Estimating">
-        <div class="step-dot"></div>
-        <div class="step-label">Estimating</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-stage="Sold">
-        <div class="step-dot"></div>
-        <div class="step-label">Sold</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-stage="In Production">
-        <div class="step-dot"></div>
-        <div class="step-label">In Production</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-stage="Accounts Receivable">
-        <div class="step-dot"></div>
-        <div class="step-label">Accounts Receivable</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step" data-stage="Completed">
-        <div class="step-dot"></div>
-        <div class="step-label">Completed</div>
+    <div class="stage-progress" id="stepper">
+      <div class="stage-tag" id="stageTag">2 of 6: Estimating</div>
+      <div class="stage-bars">
+        <button class="stage-bar done" data-stage="Lead" aria-label="Lead — completed"></button>
+        <button class="stage-bar active" data-stage="Estimating" aria-label="Estimating — current stage"></button>
+        <button class="stage-bar" data-stage="Sold" aria-label="Sold — upcoming"></button>
+        <button class="stage-bar" data-stage="In Production" aria-label="In Production — upcoming"></button>
+        <button class="stage-bar" data-stage="Accounts Receivable" aria-label="Accounts Receivable — upcoming"></button>
+        <button class="stage-bar" data-stage="Completed" aria-label="Completed — upcoming"></button>
       </div>
     </div>
   </div>
@@ -220,7 +200,7 @@
         </div>
         <div id="activityList">
           <div class="act-row">
-            <div class="act-ico" style="background:var(--blue-light);color:#1E4FBE"><i class="hgi-stroke hgi-mail-01"></i></div>
+            <div class="act-ico" style="background:var(--blue-light);color:var(--blue-dark)"><i class="hgi-stroke hgi-mail-01"></i></div>
             <div class="act-body">
               <div class="act-title">Email sent — Estimate follow-up</div>
               <div class="act-desc">To Mary Taylor</div>
@@ -228,7 +208,7 @@
             </div>
           </div>
           <div class="act-row">
-            <div class="act-ico" style="background:var(--page);color:#4B5160"><i class="hgi-stroke hgi-note-01"></i></div>
+            <div class="act-ico" style="background:var(--page);color:var(--ink-2)"><i class="hgi-stroke hgi-note-01"></i></div>
             <div class="act-body">
               <div class="act-title">Note added</div>
               <div class="act-desc">Mary confirmed architectural shingles, color Weathered Wood. Waiting on adjuster approval for full replacement vs. repair.</div>
@@ -236,7 +216,7 @@
             </div>
           </div>
           <div class="act-row">
-            <div class="act-ico" style="background:var(--green-light);color:#146B3C"><i class="hgi-stroke hgi-tick-01"></i></div>
+            <div class="act-ico" style="background:var(--green-light);color:var(--green-dark)"><i class="hgi-stroke hgi-tick-01"></i></div>
             <div class="act-body">
               <div class="act-title">Task completed</div>
               <div class="act-desc">Send estimate to Mary Taylor</div>
@@ -244,7 +224,7 @@
             </div>
           </div>
           <div class="act-row">
-            <div class="act-ico" style="background:var(--orange-light);color:#CC4D1F"><i class="hgi-stroke hgi-flag-01"></i></div>
+            <div class="act-ico" style="background:var(--orange-light);color:var(--orange-dark)"><i class="hgi-stroke hgi-flag-01"></i></div>
             <div class="act-body">
               <div class="act-title">Stage changed</div>
               <div class="act-desc">Lead → Estimating</div>
@@ -252,7 +232,7 @@
             </div>
           </div>
           <div class="act-row">
-            <div class="act-ico" style="background:var(--purple-light);color:#7C5CDB"><i class="hgi-stroke hgi-user-02"></i></div>
+            <div class="act-ico" style="background:var(--purple-light);color:var(--purple)"><i class="hgi-stroke hgi-user-02"></i></div>
             <div class="act-body">
               <div class="act-title">Job created</div>
               <div class="act-desc">From lead source: Referral — Robert Klein</div>
@@ -342,19 +322,19 @@
     <div class="sheet-head"><h3>Create</h3><button class="iconbtn" data-close><i class="hgi-stroke hgi-cancel-01 icon-sm"></i></button></div>
     <p class="sheet-sub">What do you want to build for this job?</p>
     <button class="create-opt" id="createProposalOpt">
-      <div class="oi" style="background:var(--orange-light);color:#CC4D1F"><i class="hgi-stroke hgi-file-02"></i></div>
+      <div class="oi" style="background:var(--orange-light);color:var(--orange-dark)"><i class="hgi-stroke hgi-file-02"></i></div>
       <div class="ot"><b>Proposal <span class="badge-rec">Recommended</span></b><span>Turn the estimate into a signable proposal</span></div>
     </button>
     <button class="create-opt" id="createEstimateOpt">
-      <div class="oi" style="background:var(--blue-light);color:#1E4FBE"><i class="hgi-stroke hgi-dollar-01"></i></div>
+      <div class="oi" style="background:var(--blue-light);color:var(--blue-dark)"><i class="hgi-stroke hgi-dollar-01"></i></div>
       <div class="ot"><b>New estimate</b><span>Create another pricing option for Mary</span></div>
     </button>
     <button class="create-opt" disabled>
-      <div class="oi" style="background:var(--page);color:#8A8F9C"><i class="hgi-stroke hgi-clipboard"></i></div>
+      <div class="oi" style="background:var(--page);color:var(--ink-3)"><i class="hgi-stroke hgi-clipboard"></i></div>
       <div class="ot"><b>Work order</b><span>Unlocks once the job is Sold</span></div>
     </button>
     <button class="create-opt" disabled style="margin-bottom:0">
-      <div class="oi" style="background:var(--page);color:#8A8F9C"><i class="hgi-stroke hgi-invoice-01"></i></div>
+      <div class="oi" style="background:var(--page);color:var(--ink-3)"><i class="hgi-stroke hgi-invoice-01"></i></div>
       <div class="ot"><b>Invoice</b><span>Unlocks once the proposal is signed</span></div>
     </button>
   </div>
@@ -376,11 +356,11 @@ function escapeHtml(s){
 }
 
 const TONES={
-  blue:{bg:'var(--blue-light)',fg:'#1E4FBE'},
-  green:{bg:'var(--green-light)',fg:'#146B3C'},
-  gray:{bg:'var(--page)',fg:'#4B5160'},
-  orange:{bg:'var(--orange-light)',fg:'#CC4D1F'},
-  purple:{bg:'var(--purple-light)',fg:'#7C5CDB'}
+  blue:{bg:'var(--blue-light)',fg:'var(--blue-dark)'},
+  green:{bg:'var(--green-light)',fg:'var(--green-dark)'},
+  gray:{bg:'var(--page)',fg:'var(--ink-2)'},
+  orange:{bg:'var(--orange-light)',fg:'var(--orange-dark)'},
+  purple:{bg:'var(--purple-light)',fg:'var(--purple)'}
 };
 function addActivity(tone, iconName, title, desc){
   const t=TONES[tone];
@@ -429,10 +409,10 @@ $('#fabCreate').addEventListener('click', ()=>openSheet('#sheetCreate'));
 $('#createProposalBtn').addEventListener('click', ()=>openSheet('#sheetCreate'));
 $('#viewEstimateBtn').addEventListener('click', ()=>showToast('Opening estimate #E-1002-1…'));
 
-/* ---- stage stepper ---- */
-$$('.step').forEach(s=>{
+/* ---- stage progress bar ---- */
+$$('.stage-bar').forEach(s=>{
   s.addEventListener('click', ()=>{
-    if(s.classList.contains('current')) { showToast('You are here: '+s.dataset.stage); return; }
+    if(s.classList.contains('active')) { showToast('You are here: '+s.dataset.stage); return; }
     if(s.classList.contains('done')) { showToast(s.dataset.stage+' — already completed'); return; }
     showToast('Complete the current stage before moving to '+s.dataset.stage);
   });

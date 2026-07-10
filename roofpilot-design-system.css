@@ -13,6 +13,23 @@
   Requires (load in <head> before this file):
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.hugeicons.com/font/icons.css">
+
+  House rules (adopted from shadcn/ui's component conventions, applied to
+  plain HTML/CSS since this project has no React/build step):
+  1. Semantic tokens only. Never write a raw hex/rgb color in markup or
+     component CSS — always reference a --token from section 1. If a
+     color pair you need doesn't have a token yet, add one here first.
+  2. Compose, don't reinvent. Before adding a new class, check if an
+     existing component (.card, .pill, .chip, .btn, .circle-action...)
+     already covers the need.
+  3. Gap over margin hacks. Use flex/grid `gap` for spacing between
+     sibling elements; reserve margin for spacing a block from what's
+     above/below it (e.g. `section{margin-top:...}`).
+  4. Dedicated classes for states, not inline styles. Loading/empty/
+     disabled/danger states get a class (e.g. .empty-hint, [disabled],
+     .circle-action.danger) instead of one-off style="" attributes.
+  5. Icons stay unstyled beyond size. Icon color always inherits from
+     the parent via `color`, sizing only via .icon/.icon-sm/.icon-lg.
 */
 
 /* =========================================================
@@ -21,9 +38,9 @@
 :root{
   /* brand */
   --orange:#FF6027; --orange-dark:#CC4D1F; --orange-light:#FFECE3;
-  /* semantic / status */
+  /* semantic / status (each has a light bg + a dark fg meant to pair together) */
   --blue:#2F6FED; --blue-light:#E8F0FE; --blue-dark:#1E4FBE;
-  --green:#1E9E5A; --green-light:#E3F8EC;
+  --green:#1E9E5A; --green-light:#E3F8EC; --green-dark:#146B3C;
   --amber:#B4740E; --amber-light:#FCF0DA;
   --red:#D6423C; --red-light:#FCEAE9;
   --purple:#7C5CDB; --purple-light:#EFEAFC;
@@ -88,19 +105,20 @@ input,select,textarea{font-family:inherit}
 .topbar-title p{margin:1px 0 0;font-size:12.5px;color:var(--ink-3);font-weight:500}
 .topbar-title p span{color:var(--orange-dark);font-weight:700}
 
-/* stage stepper (optional, used on screens with a pipeline/status) */
-.stepper{display:flex;align-items:flex-start;width:100%;padding:0 16px 34px}
-.step{display:flex;flex-direction:column;align-items:center;flex:0 0 auto;width:18px;position:relative}
-.step-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:2px solid var(--line);flex-shrink:0}
-.step-dot i{font-size:10px;color:#fff}
-.step.done .step-dot{background:var(--green);border-color:var(--green)}
-.step.current .step-dot{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-light)}
-.step.current .step-label{color:var(--orange-dark);font-weight:700}
-.step-label{position:absolute;top:24px;left:50%;transform:translateX(-50%);width:54px;font-size:8.3px;color:var(--ink-3);font-weight:600;text-align:center;line-height:1.25}
-.step:first-child .step-label{left:0;transform:none;text-align:left}
-.step:last-child .step-label{left:auto;right:0;transform:none;text-align:right}
-.step-line{flex:1 1 auto;height:2px;background:var(--line);margin-top:8px}
-.step-line.done{background:var(--green)}
+/* stage progress bar (optional, used on screens with a pipeline/status).
+   A compact tag ("2 of 6: Estimating") plus a row of equal-width segments —
+   one per stage — colored done/active/upcoming. Replaces the old dot+line
+   stepper, which didn't scale past a handful of stages. */
+.stage-progress{padding:0 16px 18px}
+.stage-tag{
+  display:block;color:var(--orange-dark);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:10px;
+}
+.stage-bars{display:flex;gap:5px}
+.stage-bar{flex:1 1 0;height:6px;min-width:0;border-radius:100px;border:none;padding:0;background:var(--line)}
+.stage-bar.done{background:var(--green)}
+.stage-bar.active{background:var(--orange)}
 
 /* =========================================================
    5. PAGE / SECTION / CARD LAYOUT
