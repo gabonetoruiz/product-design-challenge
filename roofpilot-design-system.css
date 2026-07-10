@@ -87,6 +87,17 @@ input,select,textarea{font-family:inherit}
   .device-wrap{padding:0}
   .app-frame{width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;border:none;box-shadow:none}
 }
+/* Link to the handoff notes page, sits in the page background below the
+   device frame. No room for it once the frame goes fullscreen on a real
+   phone, so it's hidden at that breakpoint — reviewers on desktop see it. */
+.notes-link{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:-8px 0 24px;font-size:13px;font-weight:600;color:var(--ink-2);text-decoration:none;
+}
+.notes-link:hover{color:var(--orange-dark)}
+@media (max-width:480px){
+  .notes-link{display:none}
+}
 
 /* =========================================================
    4. HEADER (topbar + optional stage stepper, sticky)
